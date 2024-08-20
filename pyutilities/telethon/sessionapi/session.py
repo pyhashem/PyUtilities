@@ -4,6 +4,13 @@ import json
 from pathlib import Path
 from telethon.sync import TelegramClient
 from telethon.tl.types import JsonObject
+from telethon.tl.types import TypeDataJSON
+
+
+from telethon.tl.functions.messages import RequestAppWebViewRequest
+from telethon.tl.types import InputBotAppShortName, InputPeerUser
+from urllib.parse import unquote
+
 
 class SESSION:
     def __init__(self, session: Path | str, api : APIData | None = None, device: str = None) -> None:
@@ -14,6 +21,41 @@ class SESSION:
         self.device: str = device
         self.client : TelegramClient = None
 
+
+    async def request_app_webview(self, bot: str, start_param: str, short_name: str = 'start', **kwargs) -> dict[str] | None:
+        if self.client == None:
+            return None
+
+        if not self.client.is_connected():
+            return None
+        
+        _get_input = await self.client.get_input_entity(bot)
+        entity = await self.client.get_entity(_get_input)
+        _input = InputPeerUser(entity.id, entity.access_hash)
+
+        platform = kwargs.get('platform', 'android')
+        write_allowed: bool | None = kwargs.get('write_allowed', None)
+        theme_params: TypeDataJSON | None = kwargs.get('theme_params', None)
+
+        app_info = await self.client(
+            RequestAppWebViewRequest(
+                "me",
+                InputBotAppShortName(_input, short_name),
+                platform=platform,
+                write_allowed=write_allowed,
+                start_param=start_param,
+                theme_params = theme_params
+                )
+            )
+    
+        auth_url = app_info.url
+
+        tg_web_data = unquote(
+            string=unquote(string=auth_url.split('tgWebAppData=', maxsplit=1)[1].split('&tgWebAppVersion', maxsplit=1)[0])
+            )
+
+        return dict(url=auth_url, data = tg_web_data)
+    
     def get_api_by_device(self) -> APIData:
         selecter : dict[str, API.TelegramDesktop] = {
             'android': API.TelegramAndroid,
