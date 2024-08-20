@@ -22,6 +22,13 @@ setup(
     long_description=long_description,
     packages=find_packages(),
     install_requires=['telethon', "python_socks", "async-timeout"],
+    extras_require={
+        'telethon': [
+            'telethon',
+            'python_socks',
+            'async-timeout',
+        ],
+    },
     keywords=['python', 'telethon', 'telegram', 'tl', 'pyutilities'],
     classifiers=[
         "Development Status :: 1 - Planning",
