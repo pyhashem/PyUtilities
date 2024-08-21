@@ -3,9 +3,9 @@ from pathlib import Path
 import aiofiles
 
 class AsyncJson:
-    def __init__(self, path: str | Path) -> None:
+    def __init__(self, path: str | Path, init_data: dict | None = None) -> None:
         self.path: Path = path if isinstance(path, Path) else Path(path)
-        self.data: dict = {}
+        self.data: dict = init_data if isinstance(init_data, dict) else {}
     
     async def _create_json(self) -> dict:
         async with aiofiles.open(self.path, 'a') as f:
