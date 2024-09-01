@@ -8,7 +8,7 @@ class AsyncJson:
         self.data: dict = init_data if isinstance(init_data, dict) else {}
     
     async def _create_json(self) -> dict:
-        async with aiofiles.open(self.path, 'a') as f:
+        async with aiofiles.open(self.path, 'a', encoding='utf-8') as f:
             await f.write(json.dumps(self.data, indent=4))
         
         return self.data
@@ -18,7 +18,7 @@ class AsyncJson:
             _data: dict = await self._create_json()
             return _data
 
-        async with aiofiles.open(self.path, 'r') as js:
+        async with aiofiles.open(self.path, 'r', encoding='utf-8') as js:
             self.data = json.loads(await js.read())
         
         return self.data
