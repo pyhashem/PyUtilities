@@ -27,7 +27,6 @@ class APIData:
         return _print
 
 
-
 class API:
     def __init__(self) -> None:
         pass
@@ -137,5 +136,55 @@ class API:
                 lang_pack=cls.lang_pack,
                 device_token=cls.device_token,
                 init_request_params=init_request_params,
+
+            )
+    
+
+    class CustomApi:
+        api_id: int = None
+        api_hash: str = None
+        device_model: str = None
+        system_version: str = None
+        app_version: str | list = None
+        lang_code: str = None
+        system_lang_code: str = None
+        lang_pack: str = None
+        device_token: str = None
+        init_request_params = None
+        
+        def __init__(self) -> None:
+            pass
+
+        @classmethod
+        def generate(cls) -> APIData:
+            if cls.device_model == 'android':
+                device_model: str = random.choice(ANDROID.DEVICES)
+                system_version: str = random.choice(ANDROID.SYSTEM_VERSION)
+            
+            else:
+                device_model: str = random.choice(DESKTOP.DEVICES)
+                system_version: str = random.choice(DESKTOP.SYSTEM_VERSION)
+            
+
+            if isinstance(cls.app_version, list):
+                app_version: str = random.choice(cls.app_version)
+
+            else:
+                app_version: str = cls.app_version
+
+            if cls.system_version != 'random':
+                system_version = cls.system_version
+            
+            return APIData(
+                api_id = cls.api_id,
+                api_hash = cls.api_hash,
+                device_model = device_model,
+                system_version = system_version,
+                app_version = app_version,
+                lang_code = cls.lang_code,
+                system_lang_code=cls.system_lang_code,
+                lang_pack=cls.lang_pack,
+                device_token=cls.device_token,
+                init_request_params=cls.init_request_params,
 
             )
