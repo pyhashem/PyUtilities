@@ -15,7 +15,7 @@ from urllib.parse import unquote
 class SESSION:
     def __init__(self, session: Path | str, api : APIData | None = None, device: str = None) -> None:
         self.session_path : Path = session if isinstance(session, Path) else Path(session)
-        self.session_json_path : Path = session.with_suffix('.json')
+        self.session_json_path : Path = self.session_path.with_suffix('.json')
         self.json: dict = {}
         self.api: API.TelegramDesktop = api
         self.device: str = device
@@ -80,7 +80,7 @@ class SESSION:
         
         return None
 
-    def get_client(self) -> TelegramClient:
+    def get_client(self, **kwargs) -> TelegramClient:
         if self.client != None:
             return self.client
     
@@ -110,6 +110,7 @@ class SESSION:
             device_model=self.api.device_model,
             lang_code=self.api.lang_code,
             flood_sleep_threshold=0,
+            **kwargs
             )
 
         is_valid_lang_pack: str | None = self.valid_lang_pack(api_id=self.api.api_id)
