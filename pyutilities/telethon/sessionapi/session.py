@@ -13,7 +13,7 @@ from urllib.parse import unquote
 
 
 class SESSION:
-    def __init__(self, session: Path | str, api : APIData | None = None, device: str = None) -> None:
+    def __init__(self, session: Path | str, api : APIData | None = None, device: str = None, *args, **kwargs) -> None:
         self.session_path : Path = session if isinstance(session, Path) else Path(session)
         self.session_json_path : Path = self.session_path.with_suffix('.json')
         self.json: dict = {}
